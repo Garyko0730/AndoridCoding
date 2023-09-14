@@ -15,8 +15,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main); //使用layout
-        RelativeLayout relativeLayout = new RelativeLayout(this);
+        setContentView(R.layout.activity_main); //使用layout
+        TextView textViewfirst=findViewById(R.id.text_view_hello_world);
+        textViewfirst.setText("你好 Android");
+        /*RelativeLayout relativeLayout = new RelativeLayout(this);
         RelativeLayout.LayoutParams params =  new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -32,15 +34,15 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textView = new TextView(this);                       //创建TextView控件
         ImageView imageView = new ImageView(this);                    //创建 ImageView 控件
-
+        TextView textViewfirst=findViewById(R.id.text_view_hello_world);
+        textViewfirst.setText("你好 Android");
         textView.setText(R.string.Hello_World);                     //设置TextView的文字内容
+
         textView.setTextColor(Color.GREEN);                                  //设置TextView的文字颜色
         textView.setTextSize(18);                                                //设置TextView的文字大小
         imageView.setImageResource(R.drawable.my_image);
-
         relativeLayout.addView(textView, params);                  //添加TextView对象和TextView的布局属性
         relativeLayout.addView(imageView,layoutParams);
-
-        setContentView(relativeLayout);                                  //设置在Activity中显示RelativeLayout
+        setContentView(relativeLayout);                                  //设置在Activity中显示RelativeLayout*/
     }
 }
