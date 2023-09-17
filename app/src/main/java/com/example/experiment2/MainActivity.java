@@ -15,9 +15,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main); //使用layout
         TextView textViewfirst=findViewById(R.id.text_view_hello_world);
         textViewfirst.setText("你好 Android");
+
         /*RelativeLayout relativeLayout = new RelativeLayout(this);
         RelativeLayout.LayoutParams params =  new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);  //设置布局中的控件置顶显示
         params.addRule(RelativeLayout.CENTER_HORIZONTAL); //设置布局中的控件居中显示
         params.leftMargin = 100;  // X轴位置，单位为像素
-        params.topMargin = 800;   // Y轴位置，单位为像素
+        params.topMargin = 900;   // Y轴位置，单位为像素
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -34,8 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textView = new TextView(this);                       //创建TextView控件
         ImageView imageView = new ImageView(this);                    //创建 ImageView 控件
-        TextView textViewfirst=findViewById(R.id.text_view_hello_world);
-        textViewfirst.setText("你好 Android");
+
         textView.setText(R.string.Hello_World);                     //设置TextView的文字内容
 
         textView.setTextColor(Color.GREEN);                                  //设置TextView的文字颜色
