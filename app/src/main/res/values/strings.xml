@@ -3,4 +3,9 @@
     <string name="HelloWorld">你好，世界！</string>
     <string name="Start">开始</string>
     <string name="Hello_World">你好，安卓！</string>
+    <string name="text_1">Hello</string>
+    <string name="text_2">JNU</string>
+    <string name="button_1">change text</string>
+    <string name="click">点击响应！</string>
+
 </resources>

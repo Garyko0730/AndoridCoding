@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +23,27 @@ public class MainActivity extends AppCompatActivity {
         TextView textViewfirst=findViewById(R.id.text_view_hello_world);
         textViewfirst.setText("你好 Android");
 
+        //交换文字
+        Button button=findViewById(R.id.button_change);
+        button.setText(R.string.button_1);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Button clickedButton = (Button) view;
+                TextView text_hello = findViewById(R.id.text_View_1);
+                TextView text_jnu = findViewById(R.id.text_View_2);
+
+                CharSequence text1 = text_hello.getText();
+                CharSequence text2 = text_jnu.getText();
+                text_jnu.setText(text1);
+                text_hello.setText(text2);
+
+                Toast.makeText(this,"交换成功",Toast.LENGTH_LONG.show());
+            }
+        });
+//交换文字
+
+        //相对布局
         /*RelativeLayout relativeLayout = new RelativeLayout(this);
         RelativeLayout.LayoutParams params =  new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -45,5 +69,6 @@ public class MainActivity extends AppCompatActivity {
         relativeLayout.addView(textView, params);                  //添加TextView对象和TextView的布局属性
         relativeLayout.addView(imageView,layoutParams);
         setContentView(relativeLayout);                                  //设置在Activity中显示RelativeLayout*/
+        //相对布局
     }
 }
