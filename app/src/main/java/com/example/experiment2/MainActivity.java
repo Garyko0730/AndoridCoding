@@ -34,24 +34,15 @@ public class MainActivity extends AppCompatActivity {
         //定义一个Arraylist
         ArrayList<ShopItem> shopItems= new ArrayList<>();
         for (int iloop = 0; iloop < 20; iloop++) {
-            shopItems.add(new ShopItem("book1",59,R.drawable.book_1));
-            shopItems.add(new ShopItem("book2",60, R.drawable.book_2));
-            shopItems.add(new ShopItem("book_no_name",65, R.drawable.book_no_name));
+            shopItems.add(new ShopItem("信息安全数学基础（第2版）",59,R.drawable.book_1));
+            shopItems.add(new ShopItem("软件项目管理案例教程（第4版）",60, R.drawable.book_2));
+            shopItems.add(new ShopItem("创新工程实践",65, R.drawable.book_no_name));
         }
         //数组是固定的，不方便插入数据
         String []itemNames = new String[]{"商品1","商品2","商品3"};//数据
 
         ShopItemAdapter shopItemAdapter = new ShopItemAdapter(shopItems);//接收一个数组
         recyclerView.setAdapter(shopItemAdapter);
-
-//        ArrayList<ShopItem> shopItems = new ArrayList<>();
-//        shopItems.add(new ShopItem("青椒", 1.5));
-//        shopItems.add(new ShopItem("商品1", 2.0));
-//        shopItems.add(new ShopItem("商品2", 3.5));
-//        shopItems.add(new ShopItem("商品3", 1.0));
-//
-//        ShopItemAdapter shopItemAdapter = new ShopItemAdapter(shopItems);
-//        recyclerView.setAdapter(shopItemAdapter);
     }
 
     public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ViewHolder> {
@@ -86,13 +77,6 @@ public class MainActivity extends AppCompatActivity {
                 return imageViewItem;
             }
         }
-
-        /**
-         * Initialize the dataset of the Adapter.
-         *
-         * @param shopItems String[] containing the data to populate views to be used
-         * by RecyclerView.
-         */
         public ShopItemAdapter(ArrayList<ShopItem> shopItems) {
             shopItemArrayList = shopItems;
         }
