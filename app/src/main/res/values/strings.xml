@@ -9,5 +9,6 @@
     <string name="click">点击响应！</string>
     <string name="string_item_price">item_price</string>
     <string name="string_item_name">item name</string>
+    <string name="string_ok">OK</string>
 
 </resources>

@@ -2,11 +2,15 @@ package com.example.experiment2;
 
 import static android.app.ProgressDialog.show;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -51,15 +55,29 @@ public class MainActivity extends AppCompatActivity{
 
         registerForContextMenu(mainRecyclerView);
     }
-
+    ActivityResultLauncher<Intent> addItemlauncher;
     @Override
     public boolean onContextItemSelected(MenuItem item){
         AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item
                 .getMenuInfo();
-        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show();
         switch (item.getItemId())
         {
             case 0:
+                addItemlauncher = registerForActivityResult(
+                        new ActivityResultContracts.StartActivityForResult(),
+                        result -> {
+                            if(result.getResultCode() == Activity.RESULT_OK){
+                                Intent data = result.getData();
+                                String key =data.getStringExtra("key");
+                                Toast.makeText(this, key+item.getOrder(), Toast.LENGTH_SHORT).show();
+                            }
+                            else if(result.getResultCode() == Activity.RESULT_CANCELED){
+
+                            }
+                        }
+                );
+                Intent intent = new Intent(MainActivity.this,ShopitemDetailsActivity.class);
+                addItemlauncher.launch(intent);
                 break;
             case 1:
                 break;
@@ -86,9 +104,10 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                 menu.setHeaderTitle("具体操作");
-                menu.add(0,0, Menu.NONE,"添加");
-                menu.add(0,1, Menu.NONE,"删除");
-                menu.add(0,3, Menu.NONE,"修改");
+
+                menu.add(0,0, this.getAdapterPosition(),"添加"+this.getAdapterPosition());
+                menu.add(0,1, this.getAdapterPosition(),"删除"+this.getAdapterPosition());
+                menu.add(0,2, this.getAdapterPosition(),"修改"+this.getAdapterPosition());
             }
 
             public ViewHolder(View shopItemView) {
