@@ -8,17 +8,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.experiment2.data.ShopItem;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -28,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
         //实验6RecyclerView
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);// 创建布局管理器
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView mainRecyclerView = findViewById(R.id.recycler_view);// 创建布局管理器
+        mainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //定义一个Arraylist
         ArrayList<ShopItem> shopItems= new ArrayList<>();
@@ -39,10 +44,31 @@ public class MainActivity extends AppCompatActivity {
             shopItems.add(new ShopItem("创新工程实践",65, R.drawable.book_no_name));
         }
         //数组是固定的，不方便插入数据
-        String []itemNames = new String[]{"商品1","商品2","商品3"};//数据
+//        String []itemNames = new String[]{"商品1","商品2","商品3"};//数据
 
         ShopItemAdapter shopItemAdapter = new ShopItemAdapter(shopItems);//接收一个数组
-        recyclerView.setAdapter(shopItemAdapter);
+        mainRecyclerView.setAdapter(shopItemAdapter);
+
+        registerForContextMenu(mainRecyclerView);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item){
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item
+                .getMenuInfo();
+        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show();
+        switch (item.getItemId())
+        {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            default:
+                return super.onContextItemSelected(item);
+        }
+        return true;
     }
 
     public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ViewHolder> {
@@ -53,18 +79,27 @@ public class MainActivity extends AppCompatActivity {
          * Provide a reference to the type of views that you are using
          * (custom ViewHolder).
          */
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
             private final TextView textViewName;
             private final TextView textViewPrice;
             private final ImageView imageViewItem;
-            public ViewHolder(View view) {
-                super(view);
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                menu.setHeaderTitle("具体操作");
+                menu.add(0,0, Menu.NONE,"添加");
+                menu.add(0,1, Menu.NONE,"删除");
+                menu.add(0,3, Menu.NONE,"修改");
+            }
+
+            public ViewHolder(View shopItemView) {
+                super(shopItemView);
                 // Define click listener for the ViewHolder's View
 
                 //id并不是唯一，记得加view.,要不然找出来的是一个数组
-                textViewName = view.findViewById(R.id.textView_item_name);
-                textViewPrice = view.findViewById(R.id.textView_item_price);
-                imageViewItem =view.findViewById(R.id.imageView_item);
+                textViewName = shopItemView.findViewById(R.id.textView_item_name);
+                textViewPrice = shopItemView.findViewById(R.id.textView_item_price);
+                imageViewItem =shopItemView.findViewById(R.id.imageView_item);
+                shopItemView.setOnCreateContextMenuListener(this);
             }
 
             public TextView getTextViewName() {
@@ -76,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
             public ImageView getIamgeViewItem() {
                 return imageViewItem;
             }
+
+
         }
         public ShopItemAdapter(ArrayList<ShopItem> shopItems) {
             shopItemArrayList = shopItems;
