@@ -1,27 +1,23 @@
 package com.example.experiment2;
 
-import static android.app.ProgressDialog.show;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.experiment2.data.ShopItem;
 
@@ -42,18 +38,34 @@ public class MainActivity extends AppCompatActivity{
 
         //定义一个Arraylist
         ArrayList<ShopItem> shopItems= new ArrayList<>();
-        for (int iloop = 0; iloop < 20; iloop++) {
-            shopItems.add(new ShopItem("信息安全数学基础（第2版）",59,R.drawable.book_1));
-            shopItems.add(new ShopItem("软件项目管理案例教程（第4版）",60, R.drawable.book_2));
-            shopItems.add(new ShopItem("创新工程实践",65, R.drawable.book_no_name));
-        }
+        shopItems.add(new ShopItem("信息安全数学基础（第2版）",59,R.drawable.book_1));
+        shopItems.add(new ShopItem("软件项目管理案例教程（第4版）",60, R.drawable.book_2));
+        shopItems.add(new ShopItem("创新工程实践",65, R.drawable.book_no_name));
+
         //数组是固定的，不方便插入数据
 //        String []itemNames = new String[]{"商品1","商品2","商品3"};//数据
 
         ShopItemAdapter shopItemAdapter = new ShopItemAdapter(shopItems);//接收一个数组
         mainRecyclerView.setAdapter(shopItemAdapter);
 
-        registerForContextMenu(mainRecyclerView);
+        registerForContextMenu(mainRecyclerView);//注册
+
+        addItemlauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if(result.getResultCode() == Activity.RESULT_OK){
+                        Intent data = result.getData();
+                        String name =data.getStringExtra("name");
+                        String priceText =data.getStringExtra("price");
+
+                        double price = Double.parseDouble(priceText);
+                        shopItems.add(new ShopItem(name,price,R.drawable.book_3));
+                        shopItemAdapter.notifyItemInserted(shopItems.size());
+                    }
+                    else if(result.getResultCode() == Activity.RESULT_CANCELED){
+                    }
+                }
+        );
     }
     ActivityResultLauncher<Intent> addItemlauncher;
     @Override
@@ -63,19 +75,7 @@ public class MainActivity extends AppCompatActivity{
         switch (item.getItemId())
         {
             case 0:
-                addItemlauncher = registerForActivityResult(
-                        new ActivityResultContracts.StartActivityForResult(),
-                        result -> {
-                            if(result.getResultCode() == Activity.RESULT_OK){
-                                Intent data = result.getData();
-                                String key =data.getStringExtra("key");
-                                Toast.makeText(this, key+item.getOrder(), Toast.LENGTH_SHORT).show();
-                            }
-                            else if(result.getResultCode() == Activity.RESULT_CANCELED){
 
-                            }
-                        }
-                );
                 Intent intent = new Intent(MainActivity.this,ShopitemDetailsActivity.class);
                 addItemlauncher.launch(intent);
                 break;
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity{
                 textViewName = shopItemView.findViewById(R.id.textView_item_name);
                 textViewPrice = shopItemView.findViewById(R.id.textView_item_price);
                 imageViewItem =shopItemView.findViewById(R.id.imageView_item);
+
                 shopItemView.setOnCreateContextMenuListener(this);
             }
 
