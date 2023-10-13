@@ -25,6 +25,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 
+    //将 shopItems 和 shopItemAdapter 定义为类的成员变量
+    private ArrayList<ShopItem> shopItems;
+    private ShopItemAdapter shopItemAdapter;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity{
         mainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //定义一个Arraylist
-        ArrayList<ShopItem> shopItems= new ArrayList<>();
+        shopItems= new ArrayList<>();
         shopItems.add(new ShopItem("信息安全数学基础（第2版）",59,R.drawable.book_1));
         shopItems.add(new ShopItem("软件项目管理案例教程（第4版）",60, R.drawable.book_2));
         shopItems.add(new ShopItem("创新工程实践",65, R.drawable.book_no_name));
@@ -45,7 +49,7 @@ public class MainActivity extends AppCompatActivity{
         //数组是固定的，不方便插入数据
 //        String []itemNames = new String[]{"商品1","商品2","商品3"};//数据
 
-        ShopItemAdapter shopItemAdapter = new ShopItemAdapter(shopItems);//接收一个数组
+        shopItemAdapter = new ShopItemAdapter(shopItems);//接收一个数组
         mainRecyclerView.setAdapter(shopItemAdapter);
 
         registerForContextMenu(mainRecyclerView);//注册
@@ -66,22 +70,31 @@ public class MainActivity extends AppCompatActivity{
                     }
                 }
         );
+
     }
     ActivityResultLauncher<Intent> addItemlauncher;
+
+    private static final int MENU_ITEM_ADD = 0;
+    private static final int MENU_ITEM_DELETE = 1;
+    private static final int MENU_ITEM_UPDATE = 2;
+
     @Override
     public boolean onContextItemSelected(MenuItem item){
         AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item
                 .getMenuInfo();
+        int position = item.getOrder();  // 获取被点击的项的位置
         switch (item.getItemId())
         {
-            case 0:
-
+            //使用描述性的名字代替case0，case1，case2
+            case MENU_ITEM_ADD:
                 Intent intent = new Intent(MainActivity.this,ShopitemDetailsActivity.class);
                 addItemlauncher.launch(intent);
                 break;
-            case 1:
+            case MENU_ITEM_DELETE:
+                shopItems.remove(position);  // 从数据集中删除项
+                shopItemAdapter.notifyItemRemoved(position);  // 通知适配器项已删除
                 break;
-            case 2:
+            case MENU_ITEM_UPDATE:
                 break;
             default:
                 return super.onContextItemSelected(item);
