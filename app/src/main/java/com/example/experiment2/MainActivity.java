@@ -2,6 +2,8 @@ package com.example.experiment2;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -19,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.experiment2.data.DataBank;
 import com.example.experiment2.data.ShopItem;
 
 import java.util.ArrayList;
@@ -26,7 +29,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity{
 
     //将 shopItems 和 shopItemAdapter 定义为类的成员变量
-    private ArrayList<ShopItem> shopItems;
+    private ArrayList<ShopItem> shopItems = new ArrayList<>();
     private ShopItemAdapter shopItemAdapter;
 
     @SuppressLint("SetTextI18n")
@@ -42,9 +45,14 @@ public class MainActivity extends AppCompatActivity{
 
         //定义一个Arraylist
         shopItems= new ArrayList<>();
-        shopItems.add(new ShopItem("信息安全数学基础（第2版）",59,R.drawable.book_1));
-        shopItems.add(new ShopItem("软件项目管理案例教程（第4版）",60, R.drawable.book_2));
-        shopItems.add(new ShopItem("创新工程实践",65, R.drawable.book_no_name));
+
+        shopItems = new DataBank().LoadShopItems(MainActivity.this);//静态
+        if(0 == shopItems.size()){
+            shopItems.add(new ShopItem("信息安全数学基础（第2版）",59,R.drawable.book_1));
+        }
+//        shopItems.add(new ShopItem("信息安全数学基础（第2版）",59,R.drawable.book_1));
+//        shopItems.add(new ShopItem("软件项目管理案例教程（第4版）",60, R.drawable.book_2));
+//        shopItems.add(new ShopItem("创新工程实践",65, R.drawable.book_no_name));
 
         //数组是固定的，不方便插入数据
 //        String []itemNames = new String[]{"商品1","商品2","商品3"};//数据
@@ -65,6 +73,36 @@ public class MainActivity extends AppCompatActivity{
                         double price = Double.parseDouble(priceText);
                         shopItems.add(new ShopItem(name,price,R.drawable.book_3));
                         shopItemAdapter.notifyItemInserted(shopItems.size());
+
+                        new DataBank().SaveShopItems(MainActivity.this, shopItems);
+
+
+                    }
+                    else if(result.getResultCode() == Activity.RESULT_CANCELED){
+                    }
+                }
+        );
+        updateItemlauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if(result.getResultCode() == Activity.RESULT_OK){
+                        Intent data = result.getData();
+
+                        int position = data.getIntExtra("position",0);
+                        String name =data.getStringExtra("name");
+                        String priceText =data.getStringExtra("price");
+
+
+                        double price = Double.parseDouble(priceText);
+                        ShopItem shopItem = shopItems.get(position);
+                        shopItem.setPrice(price);
+                        shopItem.setName(name);
+
+                        shopItemAdapter.notifyItemChanged(position);
+
+                        new DataBank().SaveShopItems(MainActivity.this, shopItems);
+
+
                     }
                     else if(result.getResultCode() == Activity.RESULT_CANCELED){
                     }
@@ -73,7 +111,7 @@ public class MainActivity extends AppCompatActivity{
 
     }
     ActivityResultLauncher<Intent> addItemlauncher;
-
+    ActivityResultLauncher<Intent> updateItemlauncher;
     private static final int MENU_ITEM_ADD = 0;
     private static final int MENU_ITEM_DELETE = 1;
     private static final int MENU_ITEM_UPDATE = 2;
@@ -91,10 +129,35 @@ public class MainActivity extends AppCompatActivity{
                 addItemlauncher.launch(intent);
                 break;
             case MENU_ITEM_DELETE:
-                shopItems.remove(position);  // 从数据集中删除项
-                shopItemAdapter.notifyItemRemoved(position);  // 通知适配器项已删除
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("确认删除");
+                builder.setMessage("确定要删除吗？");
+                builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 用户点击了确认按钮，执行删除操作
+                        shopItems.remove(position);  // 从数据集中删除项
+                        shopItemAdapter.notifyItemRemoved(position);  // 通知适配器项已删除
+                        new DataBank().SaveShopItems(MainActivity.this,shopItems);
+                    }
+                });
+                builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 用户点击了取消按钮，不执行删除操作
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 break;
             case MENU_ITEM_UPDATE:
+                Intent intentUpdate = new Intent(MainActivity.this,ShopitemDetailsActivity.class);
+                ShopItem shopItem = shopItems.get(item.getOrder());
+                intentUpdate.putExtra("name",shopItem.getName());
+                intentUpdate.putExtra("price",shopItem.getPrice());
+                intentUpdate.putExtra("position",item.getOrder());
+
+                updateItemlauncher.launch(intentUpdate);
                 break;
             default:
                 return super.onContextItemSelected(item);
