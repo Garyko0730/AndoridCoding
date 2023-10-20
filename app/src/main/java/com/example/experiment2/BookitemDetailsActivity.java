@@ -9,14 +9,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class ShopitemDetailsActivity extends AppCompatActivity {
+public class BookitemDetailsActivity extends AppCompatActivity {
 
     private int position=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shopitem_details);
+        setContentView(R.layout.activity_bookitem_details);
 
         Intent intent = getIntent();
         if(null != intent){
@@ -44,7 +44,7 @@ public class ShopitemDetailsActivity extends AppCompatActivity {
                 intent.putExtra("price",editTextItemPrice.getText().toString());
                 intent.putExtra("position",position);
                 setResult(Activity.RESULT_OK,intent);
-                ShopitemDetailsActivity.this.finish();//关闭Activity
+                BookitemDetailsActivity.this.finish();//关闭Activity
             }
         });
     }

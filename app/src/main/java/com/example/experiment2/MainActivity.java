@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity{
         {
             //使用描述性的名字代替case0，case1，case2
             case MENU_ITEM_ADD:
-                Intent intent = new Intent(MainActivity.this,ShopitemDetailsActivity.class);
+                Intent intent = new Intent(MainActivity.this, BookitemDetailsActivity.class);
                 addItemlauncher.launch(intent);
                 break;
             case MENU_ITEM_DELETE:
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity{
                 dialog.show();
                 break;
             case MENU_ITEM_UPDATE:
-                Intent intentUpdate = new Intent(MainActivity.this,ShopitemDetailsActivity.class);
+                Intent intentUpdate = new Intent(MainActivity.this, BookitemDetailsActivity.class);
                 ShopItem shopItem = shopItems.get(item.getOrder());
                 intentUpdate.putExtra("name",shopItem.getName());
                 intentUpdate.putExtra("price",shopItem.getPrice());
