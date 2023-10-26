@@ -1,87 +1,76 @@
 package com.example.experiment2;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Lifecycle;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity{
-    private String []tabHeaderStrings = {"Shopping items","baidu maps","News"};
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_recycleview);
+import com.example.experiment2.data.DataBank;
+import com.example.experiment2.data.ShopItem;
 
-        ViewPager2 viewPager = findViewById(R.id.view_pager);
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
+import java.util.ArrayList;
 
-        FragmentAdapter pagerAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle());
-        viewPager.setAdapter(pagerAdapter);
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link ShoppingListFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ShoppingListFragment extends Fragment {
 
-        new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> tab.setText(tabHeaderStrings[position])
-            // 设置TabLayout的标题
-        ).attach();
+    public ShoppingListFragment() {
+        // Required empty public constructor
     }
 
-    private class FragmentAdapter extends FragmentStateAdapter {
-        private static final int NUM_TABS = 3;
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
 
-        public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
-            super(fragmentManager, lifecycle);
+     * @return A new instance of fragment ShoppingListFragment.
+     */
+    public static ShoppingListFragment newInstance() {
+        ShoppingListFragment fragment = new ShoppingListFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
-        }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
 
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            switch (position) {
-                case 0:
-                    return new ShoppingListFragment();
-                case 1:
-                    return new BaiduMapFragment();
-                case 2:
-                    return new WebViewFragment();
-                default:
-                    return null;
-            }
-        }
-
-        @NonNull
-        @Override
-        public int getItemCount() {
-            return NUM_TABS;
         }
     }
-}
-    /*
-    //将 shopItems 和 shopItemAdapter 定义为类的成员变量
-    private ArrayList<ShopItem> shopItems = new ArrayList<>();
-    private ShopItemAdapter shopItemAdapter;
 
-    @SuppressLint("SetTextI18n")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_recycleview);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View rootview = inflater.inflate(R.layout.fragment_shopping_list, container, false);
 
-        //实验6RecyclerView
-
-        RecyclerView mainRecyclerView = findViewById(R.id.recycler_view);// 创建布局管理器
-        mainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView mainRecyclerView = rootview.findViewById(R.id.recycler_view);// 创建布局管理器
+        mainRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         //定义一个Arraylist
         shopItems= new ArrayList<>();
 
-        shopItems = new DataBank().LoadShopItems(MainActivity.this);//静态
+        shopItems = new DataBank().LoadShopItems(requireActivity());//静态
         if(0 == shopItems.size()){
             shopItems.add(new ShopItem("信息安全数学基础（第2版）",59,R.drawable.book_1));
         }
@@ -109,7 +98,7 @@ public class MainActivity extends AppCompatActivity{
                         shopItems.add(new ShopItem(name,price,R.drawable.book_no_name));
                         shopItemAdapter.notifyItemInserted(shopItems.size());
 
-                        new DataBank().SaveShopItems(MainActivity.this, shopItems);
+                        new DataBank().SaveShopItems(requireActivity(), shopItems);
 
 
                     }
@@ -135,7 +124,7 @@ public class MainActivity extends AppCompatActivity{
 
                         shopItemAdapter.notifyItemChanged(position);
 
-                        new DataBank().SaveShopItems(MainActivity.this, shopItems);
+                        new DataBank().SaveShopItems(requireActivity(), shopItems);
 
 
                     }
@@ -143,8 +132,12 @@ public class MainActivity extends AppCompatActivity{
                     }
                 }
         );
-
+        return rootview;
     }
+    //将 shopItems 和 shopItemAdapter 定义为类的成员变量
+    private ArrayList<ShopItem> shopItems = new ArrayList<>();
+    private ShopItemAdapter shopItemAdapter;
+
     ActivityResultLauncher<Intent> addItemlauncher;
     ActivityResultLauncher<Intent> updateItemlauncher;
     private static final int MENU_ITEM_ADD = 0;
@@ -160,11 +153,11 @@ public class MainActivity extends AppCompatActivity{
         {
             //使用描述性的名字代替case0，case1，case2
             case MENU_ITEM_ADD:
-                Intent intent = new Intent(MainActivity.this, BookitemDetailsActivity.class);
+                Intent intent = new Intent(requireActivity(), BookitemDetailsActivity.class);
                 addItemlauncher.launch(intent);
                 break;
             case MENU_ITEM_DELETE:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
                 builder.setTitle("确认删除");
                 builder.setMessage("确定要删除吗？");
                 builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
@@ -173,7 +166,7 @@ public class MainActivity extends AppCompatActivity{
                         // 用户点击了确认按钮，执行删除操作
                         shopItems.remove(position);  // 从数据集中删除项
                         shopItemAdapter.notifyItemRemoved(position);  // 通知适配器项已删除
-                        new DataBank().SaveShopItems(MainActivity.this,shopItems);
+                        new DataBank().SaveShopItems(requireActivity(),shopItems);
                     }
                 });
                 builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
@@ -186,7 +179,7 @@ public class MainActivity extends AppCompatActivity{
                 dialog.show();
                 break;
             case MENU_ITEM_UPDATE:
-                Intent intentUpdate = new Intent(MainActivity.this, BookitemDetailsActivity.class);
+                Intent intentUpdate = new Intent(requireActivity(), BookitemDetailsActivity.class);
                 ShopItem shopItem = shopItems.get(item.getOrder());
                 intentUpdate.putExtra("name",shopItem.getName());
                 intentUpdate.putExtra("price",shopItem.getPrice());
@@ -273,82 +266,4 @@ public class MainActivity extends AppCompatActivity{
             return shopItemArrayList.size();
         }
     }
-    /*
 }
-        //实验6RecyclerView
-
-
-//交换文字
-
-//        Button button=findViewById(R.id.button_change);
-//        button.setText(R.string.button_1);
-//        button.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Button clickedButton = (Button) view;
-//                TextView text_hello = findViewById(R.id.text_View_1);
-//                TextView text_jnu = findViewById(R.id.text_View_2);
-//
-//                CharSequence text1 = text_hello.getText();
-//                CharSequence text2 = text_jnu.getText();
-//                text_jnu.setText(text1);
-//                text_hello.setText(text2);
-//
-//                Toast.makeText(MainActivity.this,"交换成功", Toast.LENGTH_SHORT).show();
-//                showDialog(MainActivity.this, "", "交换成功啦！");
-//                };
-//            });
-//        };
-//        private void showDialog(MainActivity context, String title, String message) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//        builder.setTitle(title)
-//                .setMessage(message)
-//                .setPositiveButton("我知道了", new DialogInterface.OnClickListener()
-//                {
-//                    public void onClick(DialogInterface dialog, int which)
-//                    {
-//                        // 在确定按钮点击时执行的逻辑
-//                    }
-//                })
-//
-//                //不需要取消按钮，这里先注释掉了
-////                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-////                    public void onClick(DialogInterface dialog, int which) {
-////                        // 在取消按钮点击时执行的逻辑
-////                    }
-////                })
-//                .show();
-
-//交换文字
-
-        //相对布局
-        /*RelativeLayout relativeLayout = new RelativeLayout(this);
-        RelativeLayout.LayoutParams params =  new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);  //设置布局中的控件置顶显示
-        params.addRule(RelativeLayout.CENTER_HORIZONTAL); //设置布局中的控件居中显示
-        params.leftMargin = 100;  // X轴位置，单位为像素
-        params.topMargin = 900;   // Y轴位置，单位为像素
-
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM); //设置imageview控件布局
-
-        TextView textView = new TextView(this);                       //创建TextView控件
-        ImageView imageView = new ImageView(this);                    //创建 ImageView 控件
-
-        textView.setText(R.string.Hello_World);                     //设置TextView的文字内容
-
-        textView.setTextColor(Color.GREEN);                                  //设置TextView的文字颜色
-        textView.setTextSize(18);                                                //设置TextView的文字大小
-        imageView.setImageResource(R.drawable.my_image);
-        relativeLayout.addView(textView, params);                  //添加TextView对象和TextView的布局属性
-        relativeLayout.addView(imageView,layoutParams);
-        setContentView(relativeLayout);                                  //设置在Activity中显示RelativeLayout*/
-        //相对布局
-//    }
-//}
