@@ -5,9 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".BaiduMapFragment">
 
-    <WebView
-        android:id="@+id/webView_baidu"
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/bmapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clickable="true" />
 
 </FrameLayout>

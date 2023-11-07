@@ -2,3 +2,4 @@
 plugins {
     id("com.android.application") version "8.1.1" apply false
 }
+val ndkVersion by extra("26.1.10909125")
