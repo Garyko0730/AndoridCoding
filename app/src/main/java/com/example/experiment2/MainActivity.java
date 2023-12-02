@@ -1,6 +1,8 @@
 package com.example.experiment2;
 
+import android.graphics.Canvas;
 import android.os.Bundle;
+import android.view.SurfaceHolder;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +16,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class MainActivity extends AppCompatActivity{
-    private String []tabHeaderStrings = {"Shopping items","Tencentmap","News","Clock"};
+    private String []tabHeaderStrings = {"Shopping items","Tencentmap","News","Game"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity{
                 case 2:
                     return new WebViewFragment();
                 case 3:
-                    return new ClockViewFragment();
+                    return new GameViewFragment();
                 default:
                     return null;
             }
