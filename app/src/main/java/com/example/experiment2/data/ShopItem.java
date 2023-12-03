@@ -30,4 +30,5 @@ public class ShopItem implements Serializable { //对象实现序列化
     public void setName(String name) {
         this.name = name;
     }
+
 }
