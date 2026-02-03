@@ -43,6 +43,7 @@ dependencies {
     implementation("com.baidu.lbsyun:BaiduMapSDK_Location:9.5.2")
     implementation("com.baidu.lbsyun:BaiduMapSDK_Map:7.5.9.2")
     implementation("com.tencent.map:tencent-map-vector-sdk:4.3.4")
+    implementation("com.google.code.gson:gson:2.10.1")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20231013")
 //    androidTestImplementation("androidx.test.ext:junit:1.2.0-alpha02")
